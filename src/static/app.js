@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function fetchActivities() {
     activitiesList.innerHTML = "<p>Loading activities...</p>";
     try {
-      const res = await fetch("/activities");
+      const res = await fetch("/activities", { cache: "no-store" });
       if (!res.ok) throw new Error("Failed to load activities");
       const activities = await res.json();
       renderActivities(activities);
@@ -62,10 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
           btn.title = `Unregister ${p}`;
           btn.type = "button";
           btn.innerHTML = "✖";
-          btn.addEventListener("click", async () => {
+              btn.addEventListener("click", async () => {
             try {
-              const url = `/activities/${encodeURIComponent(name)}/participants?email=${encodeURIComponent(p)}`;
-              const res = await fetch(url, { method: "DELETE" });
+                  const url = `/activities/${encodeURIComponent(name)}/participants?email=${encodeURIComponent(p)}`;
+                  const res = await fetch(url, { method: "DELETE", cache: "no-store" });
               const data = await res.json();
               if (!res.ok) {
                 showMessage(data.detail || data.message || "Could not unregister", "error");
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     try {
       const url = `/activities/${encodeURIComponent(activity)}/signup?email=${encodeURIComponent(email)}`;
-      const res = await fetch(url, { method: "POST" });
+      const res = await fetch(url, { method: "POST", cache: "no-store" });
       const data = await res.json();
       if (!res.ok) {
         showMessage(data.detail || "Signup failed", "error");
