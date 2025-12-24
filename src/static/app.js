@@ -51,7 +51,36 @@ document.addEventListener("DOMContentLoaded", () => {
       if (info.participants && info.participants.length) {
         info.participants.forEach((p) => {
           const li = document.createElement("li");
-          li.textContent = p;
+          li.className = "participant-item";
+
+          const span = document.createElement("span");
+          span.textContent = p;
+          span.className = "participant-email";
+
+          const btn = document.createElement("button");
+          btn.className = "delete-btn";
+          btn.title = `Unregister ${p}`;
+          btn.type = "button";
+          btn.innerHTML = "✖";
+          btn.addEventListener("click", async () => {
+            try {
+              const url = `/activities/${encodeURIComponent(name)}/participants?email=${encodeURIComponent(p)}`;
+              const res = await fetch(url, { method: "DELETE" });
+              const data = await res.json();
+              if (!res.ok) {
+                showMessage(data.detail || data.message || "Could not unregister", "error");
+              } else {
+                showMessage(data.message || "Unregistered", "success");
+                await fetchActivities();
+              }
+            } catch (err) {
+              console.error(err);
+              showMessage("Network error while unregistering.", "error");
+            }
+          });
+
+          li.appendChild(span);
+          li.appendChild(btn);
           ul.appendChild(li);
         });
       } else {
